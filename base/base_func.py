@@ -1,7 +1,7 @@
 class BaseFunc:
     @staticmethod
-    def make_list_to_dropdown(list_in):
+    def make_list_to_dropdown(label_list_in, value_list_in):
         dropdown_list = []
-        for element in list_in:
-            dropdown_list.append({'label': element, 'value': element})
+        for label_el, value_el in zip(label_list_in, value_list_in):
+            dropdown_list.append({'label': label_el, 'value': value_el})
         return dropdown_list
