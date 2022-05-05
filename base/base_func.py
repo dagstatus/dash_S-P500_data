@@ -5,3 +5,7 @@ class BaseFunc:
         for label_el, value_el in zip(label_list_in, value_list_in):
             dropdown_list.append({'label': label_el, 'value': value_el})
         return dropdown_list
+
+    @staticmethod
+    def get_columns(df):
+        return df.columns.tolist()

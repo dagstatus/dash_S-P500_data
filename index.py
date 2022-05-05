@@ -19,22 +19,54 @@ app.layout = html.Div(children=[
     html.Div(children='''
         Dash: A web application framework for your data.
     '''),
-    dcc.Dropdown(id='list_companies', options=BaseClass.make_list_to_dropdown(
-        ListCompaniesClass.df_companies['Name'].tolist(),
-        ListCompaniesClass.df_companies['Symbol'].tolist()
+    html.Div(children=[
+        dcc.Dropdown(id='list_companies', options=BaseClass.make_list_to_dropdown(
+            ListCompaniesClass.df_companies['Name'].tolist(),
+            ListCompaniesClass.df_companies['Symbol'].tolist()
+        ), clearable=True, placeholder='Select company')],
+        style={"width": "45%", 'display': 'inline-block'},
     ),
-                 clearable=True),
+    html.Div(children=[
+        dcc.Dropdown(id='list_columns',
+                     options=BaseClass.make_list_to_dropdown(
+                         ['No columns'], [False]
+                     ),
+                     clearable=True,
+                     multi=True,
+                     placeholder='Select columns',
+                     # value=False,
+                     disabled=True)
+    ], style={"width": "45%", 'display': 'inline-block'}
+    ),
     dcc.Graph(
-        id='graph_close_price'
+        id='graph_need_columns'
     )
 ])
 
 
-@app.callback(Output('graph_close_price', 'figure'),
+@app.callback(Output('list_columns', 'options'),
+              Output('list_columns', 'disabled'),
               Input('list_companies', 'value'))
-def update_figure(company_name_symb):
-    if company_name_symb:
-        return GraphClass.make_grap_one_column(company_name_symb, 'Close')
+def update_list_columns(company_name_symb):
+    if not company_name_symb:
+        return BaseClass.make_list_to_dropdown(['No columns'], [False]), True
+    else:
+        return BaseClass.make_list_to_dropdown(
+            BaseClass.get_columns(
+                GraphClass.check_company_in_cache(company_name_symb)),
+            BaseClass.get_columns(
+                GraphClass.check_company_in_cache(company_name_symb))
+        ), False
+
+
+@app.callback(
+    Output('graph_need_columns', 'figure'),
+    State('list_companies', 'value'),
+    Input('list_columns', 'value')
+)
+def make_graph(company_name_symb, columns_names):
+    if columns_names:
+        return GraphClass.make_grap_columns(company_name_symb, columns_names)
     else:
         fig = go.Figure()
         fig.update_layout(template='plotly_dark')
@@ -42,4 +74,4 @@ def update_figure(company_name_symb):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

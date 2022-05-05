@@ -18,17 +18,20 @@ class MakeGraph:
         df = pd.read_csv(rf'DWND/{company_name_symbol}.csv')
         return df
 
-    # def get_columns(self):
-    #     return self.df.columns.tolist()
-
-    def make_grap_one_column(self, company_symbol, need_column='Close'):
+    def make_grap_columns(self, company_symbol, need_columns):
         df = self.check_company_in_cache(company_symbol)
-        fig = go.Figure(
-            go.Scatter(
-                x=df['Date'],
-                y=df[need_column]
-            )
-        )
+        fig = go.Figure()
+        if need_columns:
+            if not isinstance(need_columns, list):
+                need_columns = [need_columns]
+        else:
+            return fig
+        for need_column in need_columns:
+            fig.add_trace(
+                go.Scatter(
+                    x=df['Date'],
+                    y=df[need_column]
+                ))
 
         fig.update_layout(template='plotly_dark',
                           title=self.title_graph_dict(need_column))

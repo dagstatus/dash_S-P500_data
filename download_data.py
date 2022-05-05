@@ -5,7 +5,7 @@ api = KaggleApi()
 api.authenticate()
 
 path = 'DWND'
-os.makedirs(path, exist_ok=False)
+os.makedirs(path, exist_ok=True)
 print("The new directory is created!")
 
 def download_data_sp_500():
@@ -39,3 +39,6 @@ def download_data_sp_500():
     except Exception as ex:
         print(ex)
         return False
+
+if __name__ == '__main__':
+    download_data_sp_500()
