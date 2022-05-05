@@ -38,8 +38,11 @@ app.layout = html.Div(children=[
                      disabled=True)
     ], style={"width": "45%", 'display': 'inline-block'}
     ),
-    dcc.Graph(
-        id='graph_need_columns'
+    html.Div(children=[
+        dcc.Graph(
+            id='graph_need_columns'
+        )],
+        style={"width": "100%"}
     )
 ])
 
